@@ -18,6 +18,7 @@ video {
   overflow-y: scroll;
   scroll-snap-type: y mandatory;
   scrollbar-width: none;
+  overscroll-behavior-y: contain;
 }
 
 .reel-item {
