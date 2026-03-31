@@ -5,6 +5,15 @@ export function createReelFeed(reels) {
   const items = []
   let activeIndex = null
   let observer
+  let soundMuted = true
+
+  function switchSound() {
+    items.forEach((item, i) => {
+      const active = (i === activeIndex)
+      const isMuted = !active || soundMuted
+      item.setMuted(isMuted)
+    })
+  }
 
   function playVideo() {
     items.forEach((item, i) => {
@@ -22,6 +31,7 @@ export function createReelFeed(reels) {
         item.clearUserPause()
       }
     })
+    switchSound()
   }
 
   function setActive(index) {
@@ -52,6 +62,20 @@ export function createReelFeed(reels) {
     playVideo()
   }
 
+  function onSoundToggle(index) {
+    if (activeIndex === null || index !== activeIndex) {
+      return
+    }
+    
+    soundMuted = !soundMuted
+    switchSound()
+
+    const item = items[activeIndex]
+    if (!item.userPaused) {
+      item.play()
+    }
+  }
+
   return {
     mount(container) {
       const el = document.createElement('div')
@@ -61,7 +85,10 @@ export function createReelFeed(reels) {
       observer = createObserver(handleVisibility)
 
       reels.forEach((src, i) => {
-        const item = createReelItem(src, i, { onVideoTap })
+        const item = createReelItem(src, i, {
+          onVideoTap,
+          onSoundToggle,
+        })
         items.push(item)
         el.appendChild(item.el)
         observer.observe(item.el)

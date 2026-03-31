@@ -2,6 +2,9 @@ export function createReelItem(src, index, handlers = {}) {
   const el = document.createElement('div')
   el.className = 'reel-item'
 
+  const wrap = document.createElement('div')
+  wrap.className = 'reel-wrap'
+
   const reel = document.createElement('video')
   reel.classList.add('reel-video')
   reel.src = src
@@ -13,7 +16,18 @@ export function createReelItem(src, index, handlers = {}) {
     e.stopPropagation()
     handlers.onVideoTap?.(index)
   })
-  el.appendChild(reel)
+
+  const soundBtn = document.createElement('button')
+  soundBtn.className = 'sound-btn'
+  soundBtn.textContent = '🔇'
+  soundBtn.addEventListener('click', (e) => {
+    console.log('clicked sound btn')
+    e.stopPropagation()
+    handlers.onSoundToggle?.(index)
+  })
+
+  wrap.append(reel, soundBtn)
+  el.appendChild(wrap)
 
   let userPaused = false
 
@@ -29,6 +43,10 @@ export function createReelItem(src, index, handlers = {}) {
     },
     pause() {
       reel.pause()
+    },
+    setMuted(value) {
+      reel.muted = value
+      soundBtn.textContent = value ? '🔇' : '🔊'
     },
     togglePlayFromUser() {
       if (reel.paused) {
