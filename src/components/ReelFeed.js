@@ -6,18 +6,31 @@ export function createReelFeed(reels) {
   let activeIndex = null
   let observer
 
+  function playVideo() {
+    items.forEach((item, i) => {
+      const active = (i === activeIndex)
+      if (active) {
+        if (!item.userPaused) {
+          item.play()
+          console.log('played')
+        } else {
+          item.pause()
+          console.log('paused')
+        }
+      } else {
+        item.pause()
+        item.clearUserPause()
+      }
+    })
+  }
+
   function setActive(index) {
     if (activeIndex === index) {
       return
     }
+    console.log('active switched')
     activeIndex = index
-    items.forEach((item, i) => {
-      if (i === index) {
-        item.play()
-      } else {
-        item.pause()
-      }
-    })
+    playVideo()
   }
 
   function handleVisibility({ index, isVisible }) {
@@ -25,6 +38,18 @@ export function createReelFeed(reels) {
       return
     }
     setActive(index)
+  }
+
+  function onVideoTap(index) {
+    console.log('tap')
+    
+    if (activeIndex === null) {
+      activeIndex = index
+    } else if (index !== activeIndex) {
+      return
+    }
+    items[index].togglePlayFromUser()
+    playVideo()
   }
 
   return {
@@ -36,11 +61,11 @@ export function createReelFeed(reels) {
       observer = createObserver(handleVisibility)
 
       reels.forEach((src, i) => {
-        const item = createReelItem(src, i)
+        const item = createReelItem(src, i, { onVideoTap })
         items.push(item)
         el.appendChild(item.el)
         observer.observe(item.el)
       })
-    }
+    },
   }
 }
