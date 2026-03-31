@@ -57,8 +57,8 @@ export function createReelFeed(reels) {
     playVideo()
   }
 
-  function onSoundToggle(index) {
-    if (activeIndex === null || index !== activeIndex) {
+  function onSoundToggle() {
+    if (activeIndex === null) {
       return
     }
 
@@ -71,19 +71,22 @@ export function createReelFeed(reels) {
     }
   }
 
-  function onSpacePress(e) {
-    if (e.code !== 'Space') {
-      return
+  function onKeyDown(e) {
+    if (e.code === 'Space' || e.code === 'KeyK') {
+      e.preventDefault()
+
+      if (activeIndex === null) {
+        return
+      }
+
+      items[activeIndex].togglePlayFromUser()
+      playVideo()
     }
 
-    e.preventDefault()
-
-    if (activeIndex === null) {
-      return
+    if (e.code === 'KeyM') {
+      e.preventDefault()
+      onSoundToggle()
     }
-
-    items[activeIndex].togglePlayFromUser()
-    playVideo()
   }
 
   return {
@@ -91,7 +94,7 @@ export function createReelFeed(reels) {
       const el = document.createElement('div')
       el.className = 'feed'
       container.appendChild(el)
-      document.addEventListener('keydown', onSpacePress)
+      document.addEventListener('keydown', onKeyDown)
 
       observer = createObserver(handleVisibility)
 
@@ -106,7 +109,7 @@ export function createReelFeed(reels) {
       })
     },
     destroy() {
-      document.removeEventListener('keydown', onSpacePress)
+      document.removeEventListener('keydown', onKeyDown)
     }
   }
 }
