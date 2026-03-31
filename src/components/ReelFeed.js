@@ -66,7 +66,7 @@ export function createReelFeed(reels) {
     if (activeIndex === null || index !== activeIndex) {
       return
     }
-    
+
     soundMuted = !soundMuted
     switchSound()
 
@@ -76,11 +76,29 @@ export function createReelFeed(reels) {
     }
   }
 
+  function onSpacePress(e) {
+    console.log('space pressed');
+    
+    if (e.code !== 'Space') {
+      return
+    }
+
+    e.preventDefault()
+
+    if (activeIndex === null) {
+      return
+    }
+
+    items[activeIndex].togglePlayFromUser()
+    playVideo()
+  }
+
   return {
     mount(container) {
       const el = document.createElement('div')
       el.className = 'feed'
       container.appendChild(el)
+      document.addEventListener('keydown', onSpacePress)
 
       observer = createObserver(handleVisibility)
 
@@ -94,5 +112,8 @@ export function createReelFeed(reels) {
         observer.observe(item.el)
       })
     },
+    destroy() {
+      document.removeEventListener('keydown', onSpacePress)
+    }
   }
 }
