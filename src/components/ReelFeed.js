@@ -21,10 +21,8 @@ export function createReelFeed(reels) {
       if (active) {
         if (!item.userPaused) {
           item.play()
-          console.log('played')
         } else {
           item.pause()
-          console.log('paused')
         }
       } else {
         item.pause()
@@ -38,7 +36,6 @@ export function createReelFeed(reels) {
     if (activeIndex === index) {
       return
     }
-    console.log('active switched')
     activeIndex = index
     playVideo()
   }
@@ -51,8 +48,6 @@ export function createReelFeed(reels) {
   }
 
   function onVideoTap(index) {
-    console.log('tap')
-    
     if (activeIndex === null) {
       activeIndex = index
     } else if (index !== activeIndex) {
@@ -77,8 +72,6 @@ export function createReelFeed(reels) {
   }
 
   function onSpacePress(e) {
-    console.log('space pressed');
-    
     if (e.code !== 'Space') {
       return
     }

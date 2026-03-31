@@ -21,7 +21,6 @@ export function createReelItem(src, index, handlers = {}) {
   soundBtn.className = 'sound-btn'
   soundBtn.textContent = '🔇'
   soundBtn.addEventListener('click', (e) => {
-    console.log('clicked sound btn')
     e.stopPropagation()
     handlers.onSoundToggle?.(index)
   })
